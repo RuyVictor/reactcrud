@@ -1,0 +1,13 @@
+CREATE SCHEMA documentos;
+
+CREATE TABLE IF NOT EXISTS documentos.nfe (
+	id SERIAL UNIQUE,
+	nome VARCHAR,
+	endereco VARCHAR,
+	municipio VARCHAR,
+	fone VARCHAR,
+	data_emissao VARCHAR
+);
+
+insert into documentos.nfe (nome, endereco, municipio, fone, data_emissao)
+       values ('LIQUIGÁS DISTRIBUIDORA LTDA', 'Marquês de Souza Melo', 'Salgueiro', '81963146443', '23/06/2018')
