@@ -45,4 +45,3 @@ $ nodemon server.js
 - [ ] Criptografia dos requests.
 - [ ] Sistema de Loading.
 - [ ] Envio de imagens ao banco de dados (Substituir thumbnail).
-- [ ] Sistema de criptografia.
