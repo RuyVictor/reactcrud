@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
+import FormData from'form-data';
 import {Button, TextField, Dialog, DialogTitle, Typography,
   DialogContent, DialogActions} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckIcon from '@material-ui/icons/Check';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
 
 const FormCreateDoc = (props) => {
   const [open, setOpen] = useState(false);
@@ -15,6 +16,8 @@ const FormCreateDoc = (props) => {
   const [municipio, setMunicipio] = useState('');
   const [fone, setFone] = useState('');
   const [data_emissao, setDataEmissao] = useState('');
+
+  const [file, setFile] = useState([]);
 
   const submitValues = async () => {
     let documento = {
@@ -27,6 +30,14 @@ const FormCreateDoc = (props) => {
 
     try {
       let result = await axios.post('/api/documentos/cadastrar', documento);
+
+      const data = new FormData();
+      //Campo que o multer vai pegar.
+      data.append("file", file);
+      axios.post('/api/documentos/cadastrar', data)
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+
       if(result) {
         //Pega os dados do banco e atualiza na tela novamente.
         axios.get('/api/documentos')
@@ -119,6 +130,30 @@ const FormCreateDoc = (props) => {
           onChange={text => setDataEmissao(text.target.value)}
           InputProps={{style: { borderRadius: 4, padding: 0, height: 35}}}
           />
+          <form action="#">
+          <input
+          accept="image/*"
+          hidden
+          style={{ display: 'none' }}
+          id="doc_image"
+          multiple
+          type="file"
+          onChange={event => setFile(event.target.files[0])}
+          />
+          <label htmlFor="doc_image">
+            <Button
+            variant="outlined"
+            color="secondary"
+            component="span"
+            className='nav-button-login'
+            style={{ borderRadius: 0, whiteSpace: 'nowrap'}}
+            startIcon={<InsertPhotoIcon style={{fontSize: '24px'}}/>}
+            >
+              ADICIONAR IMAGEM
+            </Button>
+          </label>
+          <label>{file.name}</label>
+          </form>
         </DialogContent>
         <DialogActions style={{margin: 18}}>
           <Button

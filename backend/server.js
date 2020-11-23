@@ -1,8 +1,24 @@
-const express = require("express");
+const express = require('express');
 const knex = require('./config/knex');
+const multer  = require('multer');
+const path = require('path');
+
+//Configuração do Express
 const app = express();
 app.use(express.json());
 const port = 3002;
+
+//Configuração do multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "doc_images/")
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname + path.extname(file.originalname))
+  },
+})
+const upload = multer({storage, limits: 6 * 1024 * 1024}) //6MB para o limite de imagem.
+
 
 app.listen(port, () => {
   console.log(`Servidor Express rodando em http://localhost:${port}`)
@@ -19,7 +35,7 @@ app.get('/api/documentos', async (req, res) => {
 });
 //--------------------------------------------------
 
-app.post('/api/documentos/cadastrar', async (req, res) => {
+app.post('/api/documentos/cadastrar', upload.single('file'), async (req, res) => {
   let documento = {
     nome: req.body.nome,
     endereco: req.body.endereco,
@@ -34,6 +50,8 @@ app.post('/api/documentos/cadastrar', async (req, res) => {
   }catch (e) {
     console.log(e)
   }
+
+
 });
 //--------------------------------------------------
 

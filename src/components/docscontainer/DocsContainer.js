@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './DocsContainer.css';
-import {Typography, Divider, Button, Box} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {Typography, Divider, Box} from '@material-ui/core';
 import FormDialogEdit from '../../components/formdialogedit/FormDialogEdit';
 import FormDialogDelete from '../../components/formdialogdelete/FormDialogDelete';
 
@@ -12,12 +11,18 @@ const DocsContainer = (props) => {
   //Implementação de um Loading em breve.
   const [isLoading, setLoading] = useState(true);
 
-  const filteredData = props.data.filter(i => i.nome.toLowerCase().match(props.searchValue.toLowerCase()))
+  let filteredData = []
 
   useEffect(() => {
-      axios.get('/api/documentos')
-      .then(response => props.setData(response.data));
-  }, []);
+      const fetchDocs = async () => {
+        const result = await axios.get('/api/documentos')
+        .then(response => props.setData(response.data));
+        if (result) {
+          filteredData = props.data.filter(i => i.nome.toLowerCase().match(props.searchValue.toLowerCase()));
+        }
+      }
+      fetchDocs();
+  }, [props]);
 
   return (
     <div className="all-container" style={{padding: 25}}>

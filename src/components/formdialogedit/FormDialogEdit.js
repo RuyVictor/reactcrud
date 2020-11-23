@@ -9,11 +9,12 @@ import CheckIcon from '@material-ui/icons/Check';
 const FormDialogEdit = (props) => {
   const [open, setOpen] = useState(false);
 
-  const [nome, setNome] = useState('');
-  const [endereco, setEndereco] = useState('');
-  const [municipio, setMunicipio] = useState('');
-  const [fone, setFone] = useState('');
-  const [data_emissao, setDataEmissao] = useState('');
+  //Ao editar um documento, os campos de textos já devem possuir seu valor próprio.
+  const [nome, setNome] = useState(props.doc.nome);
+  const [endereco, setEndereco] = useState(props.doc.endereco);
+  const [municipio, setMunicipio] = useState(props.doc.municipio);
+  const [fone, setFone] = useState(props.doc.fone);
+  const [data_emissao, setDataEmissao] = useState(props.doc.data_emissao);
 
   const submitValues = async () => {
     let documento = {
@@ -57,7 +58,7 @@ const FormDialogEdit = (props) => {
             Nome:
           </Typography>
           <TextField
-          defaultValue={props.doc.nome}
+          value={nome}
           className="nav-textfield"
           placeholder="Nome"
           color="secondary"
@@ -71,7 +72,7 @@ const FormDialogEdit = (props) => {
             Endereço:
           </Typography>
           <TextField
-          defaultValue={props.doc.endereco}
+          value={endereco}
           className="nav-textfield"
           placeholder="Endereço"
           color="secondary"
@@ -85,7 +86,7 @@ const FormDialogEdit = (props) => {
             Município:
           </Typography>
           <TextField
-          defaultValue={props.doc.municipio}
+          value={municipio}
           className="nav-textfield"
           placeholder="Município"
           color="secondary"
@@ -99,7 +100,7 @@ const FormDialogEdit = (props) => {
             Fone:
           </Typography>
           <TextField
-          defaultValue={props.doc.fone}
+          value={fone}
           className="nav-textfield"
           placeholder="Fone"
           color="secondary"
@@ -113,7 +114,7 @@ const FormDialogEdit = (props) => {
             Data de Emissão:
           </Typography>
           <TextField
-          defaultValue={props.doc.data_emissao}
+          value={data_emissao}
           className="nav-textfield"
           placeholder="Data de Emissão"
           color="secondary"
