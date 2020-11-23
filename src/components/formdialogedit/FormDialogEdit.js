@@ -5,6 +5,7 @@ import {Button, TextField, Dialog, DialogTitle, Typography,
 import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckIcon from '@material-ui/icons/Check';
+import PublishIcon from '@material-ui/icons/Publish';
 
 const FormDialogEdit = (props) => {
   const [open, setOpen] = useState(false);
@@ -16,27 +17,30 @@ const FormDialogEdit = (props) => {
   const [fone, setFone] = useState(props.doc.fone);
   const [data_emissao, setDataEmissao] = useState(props.doc.data_emissao);
 
-  const submitValues = async () => {
-    let documento = {
-      nome: nome,
-      endereco: endereco,
-      municipio: municipio,
-      fone: fone,
-      data_emissao: data_emissao
-    }
+  const [file, setFile] = useState([]);
 
-    try {
-      let result = await axios.put(`/api/documentos/atualizar/${props.doc.id}`, documento);
-      if(result) {
-        //Pega os dados do banco e atualiza na tela novamente.
+  const submitValues = async () => {
+
+    const data = new FormData();
+
+    axios.get('/api/documentos').then(response => {
+
+      data.append("id", props.doc.id);
+
+      data.append("file", file);
+
+      data.append("nome", nome);
+      data.append("endereco", endereco);
+      data.append("municipio", municipio);
+      data.append("fone", fone);
+      data.append("data_emissao", data_emissao);
+
+      axios.put(`/api/documentos/atualizar/${props.doc.id}`, data).then(result => {
         axios.get('/api/documentos')
         .then(response => props.setData(response.data));
-        //O Dialog só será fechado se realmente a promessa for um sucesso.
         setOpen(false);
-      }
-    }catch (e) {
-      console.log(e)
-    }
+      })
+    });
   }
 
   return (
@@ -51,7 +55,7 @@ const FormDialogEdit = (props) => {
       >
         EDITAR
       </Button>
-      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+      <Dialog open={open} onClose={() => setOpen(false)} disableBackdropClick>
         <DialogTitle id="form-dialog-title">Editar documento: {props.doc.nome} ID: {props.doc.id}</DialogTitle>
         <DialogContent>
           <Typography variant="h7">
@@ -124,6 +128,29 @@ const FormDialogEdit = (props) => {
           onChange={text => setDataEmissao(text.target.value)}
           InputProps={{style: { borderRadius: 4, padding: 0, height: 35}}}
           />
+          <input
+          accept="image/*"
+          hidden
+          style={{ display: 'none' }}
+          id="doc_image"
+          type="file"
+          onChange={event => setFile(event.target.files[0])}
+          />
+          <label htmlFor="doc_image" style={{display: 'flex', alignItems: 'center'}}>
+            <Button
+            variant="outlined"
+            color="secondary"
+            component="span"
+            className='nav-button-login'
+            style={{ borderRadius: 0, whiteSpace: 'nowrap', marginRight: 20}}
+            startIcon={<PublishIcon style={{fontSize: '24px'}}/>}
+            >
+              IMAGEM
+            </Button>
+            <label>
+              {file.name}
+            </label>
+          </label>
         </DialogContent>
         <DialogActions style={{margin: 18}}>
           <Button

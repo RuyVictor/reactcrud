@@ -11,15 +11,16 @@ const DocsContainer = (props) => {
   //Implementação de um Loading em breve.
   const [isLoading, setLoading] = useState(true);
 
-  let filteredData = []
+  //                                   converte a coluna null para uma string.
+  const filteredData = props.data.filter(row => row.nome.toLowerCase().match(props.searchValue.toLowerCase()));
 
   useEffect(() => {
-      const fetchDocs = async () => {
-        const result = await axios.get('/api/documentos')
-        .then(response => props.setData(response.data));
-        if (result) {
-          filteredData = props.data.filter(i => i.nome.toLowerCase().match(props.searchValue.toLowerCase()));
-        }
+      const fetchDocs = () => {
+        axios.get('/api/documentos')
+        .then(response => {
+          props.setData(response.data)
+          setLoading(false);
+        })
       }
       fetchDocs();
   }, [props]);
@@ -29,7 +30,7 @@ const DocsContainer = (props) => {
       <div className="doc-container">
         {filteredData.map(doc =>
           <Box className="doc-card" bgcolor="secondary.main">
-            <img src={thumbnail_main} className="doc-thumbnail" alt="logo" />
+            <img src={`/images/${doc.id}.png`} onError={event => event.target.src = imageUrl} className="doc-thumbnail" alt="logo" />
             <Divider/>
             <div className="doc-content" style={{display: 'block'}}>
               <Typography variant="button" display="block" gutterBottom>
@@ -53,6 +54,5 @@ const DocsContainer = (props) => {
   );
 }
 
-const thumbnail_main = 'https://jaleko-blog-files.s3.amazonaws.com/wp-content/uploads/2020/01/27193041/large-documentos-810x693.png';
-
+const imageUrl = "https://st3.depositphotos.com/4799321/12998/v/950/depositphotos_129987084-stock-illustration-document-icon-vector-flat-illustration.jpg";
 export default DocsContainer;

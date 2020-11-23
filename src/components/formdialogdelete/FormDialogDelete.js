@@ -37,7 +37,7 @@ const FormDialogDelete = (props) => {
       >
         DELETAR
       </Button>
-      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+      <Dialog open={open} onClose={() => setOpen(false)} disableBackdropClick>
         <DialogTitle id="form-dialog-title">Deletar documento: {props.docnome} ID: {props.docid}</DialogTitle>
         <DialogContent>
           <DialogContentText>

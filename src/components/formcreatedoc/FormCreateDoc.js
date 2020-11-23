@@ -6,7 +6,7 @@ import {Button, TextField, Dialog, DialogTitle, Typography,
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckIcon from '@material-ui/icons/Check';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
-import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
+import PublishIcon from '@material-ui/icons/Publish';
 
 const FormCreateDoc = (props) => {
   const [open, setOpen] = useState(false);
@@ -19,35 +19,33 @@ const FormCreateDoc = (props) => {
 
   const [file, setFile] = useState([]);
 
-  const submitValues = async () => {
-    let documento = {
-      nome: nome,
-      endereco: endereco,
-      municipio: municipio,
-      fone: fone,
-      data_emissao: data_emissao
-    }
+  const submitValues = () => {
 
-    try {
-      let result = await axios.post('/api/documentos/cadastrar', documento);
+    const data = new FormData();
 
-      const data = new FormData();
-      //Campo que o multer vai pegar.
+    axios.get('/api/documentos').then(response => {
+      //Função para pegar o próximo ID do banco
+      let filterIds = response.data.map(serverId => serverId.id);
+      let max = filterIds.reduce((a, b) => {
+        return Math.max(a, b);
+      });
+
+      data.append("id", max + 1);
+
       data.append("file", file);
-      axios.post('/api/documentos/cadastrar', data)
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
 
-      if(result) {
-        //Pega os dados do banco e atualiza na tela novamente.
+      data.append("nome", nome);
+      data.append("endereco", endereco);
+      data.append("municipio", municipio);
+      data.append("fone", fone);
+      data.append("data_emissao", data_emissao);
+
+      axios.post('/api/documentos/cadastrar', data).then(result => {
         axios.get('/api/documentos')
         .then(response => props.setData(response.data));
-        //O Dialog só será fechado se realmente a promessa for um sucesso.
         setOpen(false);
-      }
-    }catch (e) {
-      console.log(e)
-    }
+      })
+    });
   }
 
   return (
@@ -62,7 +60,7 @@ const FormCreateDoc = (props) => {
       >
         CRIAR DOCUMENTO
       </Button>
-      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+      <Dialog open={open} onClose={() => setOpen(false)} disableBackdropClick>
         <DialogTitle id="form-dialog-title">Criar documento</DialogTitle>
         <DialogContent>
           <Typography variant="h7">
@@ -130,30 +128,29 @@ const FormCreateDoc = (props) => {
           onChange={text => setDataEmissao(text.target.value)}
           InputProps={{style: { borderRadius: 4, padding: 0, height: 35}}}
           />
-          <form action="#">
           <input
           accept="image/*"
           hidden
           style={{ display: 'none' }}
           id="doc_image"
-          multiple
           type="file"
           onChange={event => setFile(event.target.files[0])}
           />
-          <label htmlFor="doc_image">
+          <label htmlFor="doc_image" style={{display: 'flex', alignItems: 'center'}}>
             <Button
             variant="outlined"
             color="secondary"
             component="span"
             className='nav-button-login'
-            style={{ borderRadius: 0, whiteSpace: 'nowrap'}}
-            startIcon={<InsertPhotoIcon style={{fontSize: '24px'}}/>}
+            style={{ borderRadius: 0, whiteSpace: 'nowrap', marginRight: 20}}
+            startIcon={<PublishIcon style={{fontSize: '24px'}}/>}
             >
-              ADICIONAR IMAGEM
+              IMAGEM
             </Button>
+            <label>
+              {file.name}
+            </label>
           </label>
-          <label>{file.name}</label>
-          </form>
         </DialogContent>
         <DialogActions style={{margin: 18}}>
           <Button

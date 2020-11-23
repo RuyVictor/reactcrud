@@ -10,10 +10,6 @@ Um sistema básico de crud feito em React apartir do consumo de uma API, utiliza
 
 ### Uso:
 
-```
-$ cd projetocrud
-```
-
 ##### - Iniciar o template em React:
 
 ```
@@ -44,4 +40,4 @@ $ nodemon server.js
 
 - [ ] Criptografia dos requests.
 - [ ] Sistema de Loading.
-- [ ] Envio de imagens ao banco de dados (Substituir thumbnail).
+- [x] Envio de imagens ao banco de dados (Substituir thumbnail).
