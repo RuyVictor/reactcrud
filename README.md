@@ -39,7 +39,7 @@ $ nodemon server.js
 | Express | https://expressjs.com/pt-br/ |
 | KnexJS | http://knexjs.org/ |
 | PostgreSQL | https://www.postgresql.org/ |
-
+| Multer | https://www.npmjs.com/package/multer |
 ### Tarefas:
 
 - [ ] Criptografia dos requests.
