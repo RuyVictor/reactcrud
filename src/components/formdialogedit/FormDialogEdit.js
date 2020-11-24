@@ -19,28 +19,24 @@ const FormDialogEdit = (props) => {
 
   const [file, setFile] = useState([]);
 
-  const submitValues = async () => {
+  const submitValues = () => {
 
     const data = new FormData();
 
-    axios.get('/api/documentos').then(response => {
+    data.append("file", file);
 
-      data.append("id", props.doc.id);
+    data.append("nome", nome);
+    data.append("endereco", endereco);
+    data.append("municipio", municipio);
+    data.append("fone", fone);
+    data.append("data_emissao", data_emissao);
+    data.append("image_name", Date.now());
 
-      data.append("file", file);
-
-      data.append("nome", nome);
-      data.append("endereco", endereco);
-      data.append("municipio", municipio);
-      data.append("fone", fone);
-      data.append("data_emissao", data_emissao);
-
-      axios.put(`/api/documentos/atualizar/${props.doc.id}`, data).then(result => {
-        axios.get('/api/documentos')
-        .then(response => props.setData(response.data));
-        setOpen(false);
-      })
-    });
+    axios.put(`/api/documentos/atualizar/${props.doc.id}`, data).then(result => {
+      axios.get('/api/documentos')
+      .then(response => props.setData(response.data));
+      setOpen(false);
+    })
   }
 
   return (

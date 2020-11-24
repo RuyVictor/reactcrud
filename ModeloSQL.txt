@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS documentos.nfe (
 	endereco VARCHAR,
 	municipio VARCHAR,
 	fone VARCHAR,
-	data_emissao VARCHAR
+	data_emissao VARCHAR,
+	image_name VARCHAR
 );
 
 insert into documentos.nfe (nome, endereco, municipio, fone, data_emissao)

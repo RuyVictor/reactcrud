@@ -23,29 +23,20 @@ const FormCreateDoc = (props) => {
 
     const data = new FormData();
 
-    axios.get('/api/documentos').then(response => {
-      //Função para pegar o próximo ID do banco
-      let filterIds = response.data.map(serverId => serverId.id);
-      let max = filterIds.reduce((a, b) => {
-        return Math.max(a, b);
-      });
+    data.append("file", file);
 
-      data.append("id", max + 1);
+    data.append("nome", nome);
+    data.append("endereco", endereco);
+    data.append("municipio", municipio);
+    data.append("fone", fone);
+    data.append("data_emissao", data_emissao);
+    data.append("image_name", Date.now());
 
-      data.append("file", file);
-
-      data.append("nome", nome);
-      data.append("endereco", endereco);
-      data.append("municipio", municipio);
-      data.append("fone", fone);
-      data.append("data_emissao", data_emissao);
-
-      axios.post('/api/documentos/cadastrar', data).then(result => {
-        axios.get('/api/documentos')
-        .then(response => props.setData(response.data));
-        setOpen(false);
-      })
-    });
+    axios.post('/api/documentos/cadastrar', data).then(result => {
+      axios.get('/api/documentos')
+      .then(response => props.setData(response.data));
+      setOpen(false);
+    })
   }
 
   return (

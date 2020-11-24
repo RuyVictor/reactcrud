@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
     cb(null, "doc_images/")
   },
   filename: (req, file, cb) => {
-    cb(null, req.body.id + path.extname(file.originalname))
+    cb(null, req.body.image_name + path.extname(file.originalname))
   },
 })
 const upload = multer({storage, limits: 6 * 1024 * 1024}) //6MB para o limite de imagem.
@@ -29,7 +29,7 @@ app.listen(port, () => {
 //--------------------------------------------------
 app.get('/api/documentos', async (req, res) => {
   try {
-    const result = await knex.withSchema('documentos').select().from('nfe')
+    let result = await knex.withSchema('documentos').select().from('nfe')
     res.json(result);
   }catch (e) {
     console.log(e)
@@ -43,7 +43,8 @@ app.post('/api/documentos/cadastrar', upload.single('file'), async (req, res) =>
     endereco: req.body.endereco,
     municipio: req.body.municipio,
     fone: req.body.fone,
-    data_emissao: req.body.data_emissao
+    data_emissao: req.body.data_emissao,
+    image_name: req.body.image_name
   }
 
   try {
@@ -58,23 +59,20 @@ app.post('/api/documentos/cadastrar', upload.single('file'), async (req, res) =>
 //--------------------------------------------------
 
 app.delete('/api/documentos/deletar/:id', async (req, res) => {
-  try {
-    await knex.withSchema('documentos').table('nfe').where('id', req.params.id).del()
 
-    try {
-      if (fs.existsSync(`doc_images/${req.params.id}.png`)) {
-        fs.unlink(`doc_images/${req.params.id}.png`, (err) => {
+    let result = await knex.withSchema('documentos').table('nfe').where('id', req.params.id).select()
+    if(result) {
+
+      if (fs.existsSync(`doc_images/${result.image_name}.jpg`)) {
+        fs.unlink(`doc_images/${result.image_name}.jpg`, (err) => {
           if (err) throw err;
         });
       }
-    } catch(err) {
-      console.error(err)
+      await knex.withSchema('documentos').table('nfe').where('id', req.params.id).del()
+
     }
 
     res.send(`Documento deletado!`);
-  }catch (e) {
-    console.log(e)
-  }
 });
 //--------------------------------------------------
 app.put('/api/documentos/atualizar/:id', upload.single('file'), async (req, res) => {
@@ -83,7 +81,8 @@ app.put('/api/documentos/atualizar/:id', upload.single('file'), async (req, res)
     endereco: req.body.endereco,
     municipio: req.body.municipio,
     fone: req.body.fone,
-    data_emissao: req.body.data_emissao
+    data_emissao: req.body.data_emissao,
+    image_name: req.body.image_name
   }
 
   try {
