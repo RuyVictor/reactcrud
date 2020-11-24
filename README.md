@@ -36,9 +36,11 @@ $ nodemon server.js
 | KnexJS | http://knexjs.org/ |
 | PostgreSQL | https://www.postgresql.org/ |
 | Multer | https://www.npmjs.com/package/multer |
+
 ### Tarefas:
 
 - [ ] Criptografia dos requests.
 - [ ] Sistema de Loading.
 - [x] Envio de imagens ao banco de dados (Substituir thumbnail).
+- [ ] Tornar rota do servidor estático de imagens privado.
 - [ ] Suporte para 2 tipos de extensões de imagem.
