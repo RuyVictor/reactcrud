@@ -49,6 +49,8 @@ const FormDialogEdit = (props) => {
     }
   }
   
+
+  
   if (progress === 100) {
     //Delay de 1seg para animação do Loading, caso o arquivo seja muito pequeno.
     setTimeout(() => {
