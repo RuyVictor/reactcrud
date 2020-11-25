@@ -30,7 +30,7 @@ const DocsContainer = (props) => {
       <div className="doc-container">
         {filteredData.map(doc =>
           <Box className="doc-card" bgcolor="secondary.main">
-            <img src={`/images/${doc.image_name}.${doc.image_extension}`} onError={event => {event.target.onerror = null; event.target.src = imageUrl;}} alt="a" className="doc-thumbnail" />
+            <img src={`/images/${doc.image_name}`} onError={event => {event.target.onerror = null; event.target.src = imageUrl;}} alt="a" className="doc-thumbnail" />
             <Divider/>
             <div className="doc-content" style={{display: 'block'}}>
               <Typography variant="button" display="block" gutterBottom>

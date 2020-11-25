@@ -29,8 +29,7 @@ const FormCreateDoc = (props) => {
     data.append("municipio", municipio);
     data.append("fone", fone);
     data.append("data_emissao", data_emissao);
-    data.append("image_name", Date.now());
-    data.append("image_extension", extension);
+    data.append("image_name", Date.now() + "." + extension);
 
     data.append("file", file); //último
 

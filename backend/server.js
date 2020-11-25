@@ -1,7 +1,6 @@
 const express = require('express');
 const knex = require('./config/knex');
 const multer  = require('multer');
-const path = require('path');
 const fs = require('fs');
 
 //Configuração do Express
@@ -16,7 +15,7 @@ const storage = multer.diskStorage({
     cb(null, "doc_images/")
   },
   filename: (req, file, cb) => {
-    cb(null, req.body.image_name + path.extname(file.originalname))
+    cb(null, req.body.image_name)
   },
 })
 const upload = multer({storage, limits: 6 * 1024 * 1024}) //6MB para o limite de imagem.
@@ -44,8 +43,7 @@ app.post('/api/documentos/cadastrar', upload.single('file'), async (req, res) =>
     municipio: req.body.municipio,
     fone: req.body.fone,
     data_emissao: req.body.data_emissao,
-    image_name: req.body.image_name,
-    image_extension: req.body.image_extension
+    image_name: req.body.image_name
   }
 
   try {
@@ -64,8 +62,8 @@ app.delete('/api/documentos/deletar/:id', async (req, res) => {
     let result = await knex.withSchema('documentos').table('nfe').where('id', req.params.id).select()
     if(result) {
 
-      if (fs.existsSync(`doc_images/${result[0].image_name}.${result[0].image_extension}`)) {
-        fs.unlink(`doc_images/${result[0].image_name}.${result[0].image_extension}`, (err) => {
+      if (fs.existsSync(`doc_images/${result[0].image_name}`)) {
+        fs.unlink(`doc_images/${result[0].image_name}`, (err) => {
           if (err) throw err;
         });
       }
@@ -83,8 +81,7 @@ app.put('/api/documentos/atualizar/:id', upload.single('file'), async (req, res)
     municipio: req.body.municipio,
     fone: req.body.fone,
     data_emissao: req.body.data_emissao,
-    image_name: req.body.image_name,
-    image_extension: req.body.image_extension
+    image_name: req.body.image_name
   }
 
   try {
@@ -92,8 +89,8 @@ app.put('/api/documentos/atualizar/:id', upload.single('file'), async (req, res)
     let result = await knex.withSchema('documentos').table('nfe').where('id', req.params.id).select()
     if(result) {
 
-      if (fs.existsSync(`doc_images/${result[0].image_name}.${result[0].image_extension}`)) {
-        fs.unlink(`doc_images/${result[0].image_name}.${result[0].image_extension}`, (err) => {
+      if (fs.existsSync(`doc_images/${result[0].image_name}`)) {
+        fs.unlink(`doc_images/${result[0].image_name}`, (err) => {
           if (err) throw err;
         });
       }
