@@ -44,7 +44,8 @@ app.post('/api/documentos/cadastrar', upload.single('file'), async (req, res) =>
     municipio: req.body.municipio,
     fone: req.body.fone,
     data_emissao: req.body.data_emissao,
-    image_name: req.body.image_name
+    image_name: req.body.image_name,
+    image_extension: req.body.image_extension
   }
 
   try {
@@ -63,8 +64,8 @@ app.delete('/api/documentos/deletar/:id', async (req, res) => {
     let result = await knex.withSchema('documentos').table('nfe').where('id', req.params.id).select()
     if(result) {
 
-      if (fs.existsSync(`doc_images/${result.image_name}.jpg`)) {
-        fs.unlink(`doc_images/${result.image_name}.jpg`, (err) => {
+      if (fs.existsSync(`doc_images/${result[0].image_name}.${result[0].image_extension}`)) {
+        fs.unlink(`doc_images/${result[0].image_name}.${result[0].image_extension}`, (err) => {
           if (err) throw err;
         });
       }
@@ -82,11 +83,23 @@ app.put('/api/documentos/atualizar/:id', upload.single('file'), async (req, res)
     municipio: req.body.municipio,
     fone: req.body.fone,
     data_emissao: req.body.data_emissao,
-    image_name: req.body.image_name
+    image_name: req.body.image_name,
+    image_extension: req.body.image_extension
   }
 
   try {
-    await knex.withSchema('documentos').table('nfe').where('id', req.params.id).update(documento)
+    //Função para apagar imagem antiga do banco
+    let result = await knex.withSchema('documentos').table('nfe').where('id', req.params.id).select()
+    if(result) {
+
+      if (fs.existsSync(`doc_images/${result[0].image_name}.${result[0].image_extension}`)) {
+        fs.unlink(`doc_images/${result[0].image_name}.${result[0].image_extension}`, (err) => {
+          if (err) throw err;
+        });
+      }
+
+      await knex.withSchema('documentos').table('nfe').where('id', req.params.id).update(documento)
+    }
 
     res.send(`Documento atualizado!`);
   }catch (e) {

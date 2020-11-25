@@ -23,14 +23,15 @@ const FormCreateDoc = (props) => {
 
     const data = new FormData();
 
-    data.append("file", file);
-
     data.append("nome", nome);
     data.append("endereco", endereco);
     data.append("municipio", municipio);
     data.append("fone", fone);
     data.append("data_emissao", data_emissao);
     data.append("image_name", Date.now());
+    data.append("image_extension", file.name.substring(file.name.lastIndexOf('.') + 1));
+
+    data.append("file", file); //último
 
     axios.post('/api/documentos/cadastrar', data).then(result => {
       axios.get('/api/documentos')

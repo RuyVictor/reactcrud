@@ -42,5 +42,6 @@ $ nodemon server.js
 - [ ] Criptografia dos requests.
 - [ ] Sistema de Loading.
 - [x] Envio de imagens ao banco de dados (Substituir thumbnail).
-- [ ] Tornar rota do servidor estático de imagens privado.
-- [ ] Suporte para 2 tipos de extensões de imagem.
+- [ ] Tornar rota do servidor estático de imagens seguro.
+- [x] Suporte para 2 tipos de extensões de imagem (png e jpg).
+- [ ] Adicionar hash (crypto) para nomear as imagens ao invés do Date.now().
