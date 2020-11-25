@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import axios from 'axios';
-import FormData from'form-data';
 import {Button, TextField, Dialog, DialogTitle, Typography,
-  DialogContent, DialogActions} from '@material-ui/core';
+  DialogContent, DialogActions, LinearProgress} from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckIcon from '@material-ui/icons/Check';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import PublishIcon from '@material-ui/icons/Publish';
 
 const FormCreateDoc = (props) => {
+  const [progress, setProgress] = useState(0);
+
+
   const [open, setOpen] = useState(false);
 
   const [nome, setNome] = useState('');
@@ -20,7 +22,7 @@ const FormCreateDoc = (props) => {
   const [file, setFile] = useState([]);
   const [extension, setExtension] = useState('');
 
-  const submitValues = () => {
+  const submitValues = async () => {
 
     const data = new FormData();
 
@@ -33,11 +35,28 @@ const FormCreateDoc = (props) => {
 
     data.append("file", file); //último
 
-    axios.post('/api/documentos/cadastrar', data).then(result => {
+    var config = {
+      onUploadProgress: function(progressEvent) {
+        setProgress(Math.round( (progressEvent.loaded * 100) / progressEvent.total ));
+      }
+    }
+
+    try {
+      await axios.post('/api/documentos/cadastrar', data, config);
+    } catch (e) {
+      alert(e)
+    }
+  }
+
+  if (progress === 100) {
+    //Delay de 1seg para animação do Loading, caso o arquivo seja muito pequeno.
+    setTimeout(() => {
+      setOpen(false);
+      setProgress(0);
+      setFile([]);
       axios.get('/api/documentos')
       .then(response => props.setData(response.data));
-      setOpen(false);
-    })
+    }, 1000);
   }
 
   return (
@@ -53,6 +72,7 @@ const FormCreateDoc = (props) => {
         CRIAR DOCUMENTO
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} disableBackdropClick>
+        <LinearProgress color="secondary" variant="determinate" value={progress} />
         <DialogTitle id="form-dialog-title">Criar documento</DialogTitle>
         <DialogContent>
           <Typography variant="h7">

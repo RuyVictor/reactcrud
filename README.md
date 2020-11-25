@@ -40,7 +40,7 @@ $ nodemon server.js
 ### Tarefas:
 
 - [ ] Criptografia dos requests.
-- [ ] Sistema de Loading.
+- [x] Sistema de Loading.
 - [x] Envio de imagens ao banco de dados (Substituir thumbnail).
 - [ ] Tornar rota do servidor estático de imagens seguro.
 - [x] Suporte para 2 tipos de extensões de imagem (png e jpg).
