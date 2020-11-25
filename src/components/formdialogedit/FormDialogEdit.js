@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import axios from 'axios';
 import {Button, TextField, Dialog, DialogTitle, Typography,
-  DialogContent, DialogActions} from '@material-ui/core';
+  DialogContent, DialogActions, LinearProgress} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckIcon from '@material-ui/icons/Check';
 import PublishIcon from '@material-ui/icons/Publish';
 
 const FormDialogEdit = (props) => {
+  const [progress, setProgress] = useState(0);
+
+
   const [open, setOpen] = useState(false);
 
   //Ao editar um documento, os campos de textos já devem possuir seu valor próprio.
@@ -20,7 +23,7 @@ const FormDialogEdit = (props) => {
   const [file, setFile] = useState([]);
   const [extension, setExtension] = useState('');
 
-  const submitValues = () => {
+  const submitValues = async () => {
 
     const data = new FormData();
 
@@ -33,11 +36,28 @@ const FormDialogEdit = (props) => {
 
     data.append("file", file);
 
-    axios.put(`/api/documentos/atualizar/${props.doc.id}`, data).then(result => {
-      axios.get('/api/documentos')
-      .then(response => props.setData(response.data));
-      setOpen(false);
-    })
+    var config = {
+      onUploadProgress: function(progressEvent) {
+        setProgress(Math.round( (progressEvent.loaded * 100) / progressEvent.total ));
+      }
+    }
+
+    try {
+      await axios.put(`/api/documentos/atualizar/${props.doc.id}`, data, config);
+    } catch (e) {
+      alert(e)
+    }
+
+    if (progress === 100) {
+      //Delay de 1seg para animação do Loading, caso o arquivo seja muito pequeno.
+      setTimeout(() => {
+        setOpen(false);
+        setProgress(0);
+        setFile([]);
+        axios.get('/api/documentos')
+        .then(response => props.setData(response.data));
+      }, 1000);
+    }
   }
 
   return (
@@ -53,6 +73,7 @@ const FormDialogEdit = (props) => {
         EDITAR
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} disableBackdropClick>
+        <LinearProgress color="secondary" variant="determinate" value={progress} />
         <DialogTitle id="form-dialog-title">Editar documento: {props.doc.nome} ID: {props.doc.id}</DialogTitle>
         <DialogContent>
           <Typography variant="h7">

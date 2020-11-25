@@ -4,6 +4,7 @@ import './DocsContainer.css';
 import {Typography, Divider, Box} from '@material-ui/core';
 import FormDialogEdit from '../../components/formdialogedit/FormDialogEdit';
 import FormDialogDelete from '../../components/formdialogdelete/FormDialogDelete';
+import Loader from '../../components/loader/Loader';
 
 
 const DocsContainer = (props) => {
@@ -26,7 +27,7 @@ const DocsContainer = (props) => {
   }, [props]);
 
   return (
-    <div className="all-container" style={{padding: 25}}>
+    isLoading ? <Loader/> : (<div className="all-container" style={{padding: 25}}>
       <div className="doc-container">
         {filteredData.map(doc =>
           <Box className="doc-card" bgcolor="secondary.main">
@@ -50,7 +51,7 @@ const DocsContainer = (props) => {
           </Box>
         )}
       </div>
-    </div>
+    </div>)
   );
 }
 
