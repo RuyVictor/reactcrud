@@ -18,6 +18,7 @@ const FormCreateDoc = (props) => {
   const [data_emissao, setDataEmissao] = useState('');
 
   const [file, setFile] = useState([]);
+  const [extension, setExtension] = useState('');
 
   const submitValues = () => {
 
@@ -29,7 +30,7 @@ const FormCreateDoc = (props) => {
     data.append("fone", fone);
     data.append("data_emissao", data_emissao);
     data.append("image_name", Date.now());
-    data.append("image_extension", file.name.substring(file.name.lastIndexOf('.') + 1));
+    data.append("image_extension", extension);
 
     data.append("file", file); //último
 
@@ -126,7 +127,10 @@ const FormCreateDoc = (props) => {
           style={{ display: 'none' }}
           id="doc_image"
           type="file"
-          onChange={event => setFile(event.target.files[0])}
+          onChange={event => {
+            setFile(event.target.files[0]);
+            setExtension(event.target.files[0].name.substring(event.target.files[0].name.lastIndexOf('.') + 1));
+          }}
           />
           <label htmlFor="doc_image" style={{display: 'flex', alignItems: 'center'}}>
             <Button
